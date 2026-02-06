@@ -21,12 +21,14 @@ class VPCNetwork(Construct):
         super().__init__(scope, construct_id, **kwargs)
 
         # Create VPC with public and private subnets
+        # Using explicit AZ count without querying AWS to avoid permission requirements
         self.vpc = ec2.Vpc(
             self,
             f"VPC",
             vpc_name=f"sanders-customer-platform-vpc-{environment}",
             max_azs=2,  # Use 2 availability zones
             nat_gateways=1,  # 1 NAT gateway for cost optimization
+            availability_zones=None,  # Let CDK use default without querying
             subnet_configuration=[
                 ec2.SubnetConfiguration(
                     name="Public",

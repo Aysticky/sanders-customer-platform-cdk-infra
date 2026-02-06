@@ -1,5 +1,5 @@
 {
-  "app": "python app.py",
+  "app": ".venv\\Scripts\\python.exe app.py",
   "watch": {
     "include": [
       "**"
@@ -14,6 +14,11 @@
     ]
   },
   "context": {
+    "availability-zones:account=120569615884:region=eu-central-1": [
+      "eu-central-1a",
+      "eu-central-1b",
+      "eu-central-1c"
+    ],
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "@aws-cdk/core:checkSecretUsage": true,
     "@aws-cdk/core:target-partitions": [

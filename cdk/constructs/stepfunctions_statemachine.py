@@ -66,7 +66,7 @@ class StepFunctionsStateMachine(Construct):
             "FeatureExtractionJob",
             job_name="feature-extraction",
             job_queue_arn=job_queue_arn,
-            job_definition_arn=job_definitions['8g'].attr_job_definition_arn,
+            job_definition_arn=job_definitions['8g'].ref,
             container_overrides=tasks.BatchContainerOverrides(
                 command=["python", "extract_features.py"]
             ),
@@ -79,7 +79,7 @@ class StepFunctionsStateMachine(Construct):
             "DataProcessingJob",
             job_name="data-processing",
             job_queue_arn=job_queue_arn,
-            job_definition_arn=job_definitions['2g'].attr_job_definition_arn,
+            job_definition_arn=job_definitions['2g'].ref,
             container_overrides=tasks.BatchContainerOverrides(
                 command=["python", "process_data.py"]
             ),
@@ -92,7 +92,7 @@ class StepFunctionsStateMachine(Construct):
             "ModelTrainingJob",
             job_name="model-training",
             job_queue_arn=job_queue_arn,
-            job_definition_arn=job_definitions['16g'].attr_job_definition_arn,
+            job_definition_arn=job_definitions['16g'].ref,
             container_overrides=tasks.BatchContainerOverrides(
                 command=["python", "train_model.py"]
             ),
