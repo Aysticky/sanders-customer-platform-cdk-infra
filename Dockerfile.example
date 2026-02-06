@@ -1,0 +1,19 @@
+# Example Dockerfile for Batch Jobs
+# Build your application Docker image and push to ECR
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install AWS CLI (optional, for S3/DynamoDB access)
+RUN pip install boto3
+
+# Copy application code
+COPY . .
+
+# Default command (override in Batch job definition)
+CMD ["python", "main.py"]
