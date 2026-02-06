@@ -70,3 +70,6 @@ poetry.lock
 # Local env files
 .env
 .env.local
+
+# Template/reference repositories
+tmnl-tina-platform-cdk-core-infra/

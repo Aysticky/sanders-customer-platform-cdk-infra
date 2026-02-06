@@ -64,9 +64,9 @@ class BatchEnvironment(Construct):
         self.job_definitions = {}
         
         memory_configs = [
-            {"name": "2g", "memory": "2048", "cpu": "1024"},   # 2GB, 1 vCPU
-            {"name": "8g", "memory": "8192", "cpu": "4096"},   # 8GB, 4 vCPU
-            {"name": "16g", "memory": "16384", "cpu": "8192"}  # 16GB, 8 vCPU
+            {"name": "2g", "memory": "2048", "cpu": "0.5"},    # 2GB, 0.5 vCPU (valid Fargate combo)
+            {"name": "8g", "memory": "8192", "cpu": "2"},      # 8GB, 2 vCPU (valid Fargate combo)
+            {"name": "16g", "memory": "16384", "cpu": "4"}     # 16GB, 4 vCPU (valid Fargate combo)
         ]
 
         for config in memory_configs:
