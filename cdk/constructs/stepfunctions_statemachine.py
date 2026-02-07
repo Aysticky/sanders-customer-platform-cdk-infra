@@ -74,9 +74,6 @@ class StepFunctionsStateMachine(Construct):
             container_overrides=tasks.BatchContainerOverrides(
                 command=sfn.JsonPath.list_at("$.command")
             ),
-            payload=sfn.TaskInput.from_object({
-                "command": sfn.JsonPath.string_at("$.command")
-            }),
             result_path="$.featureJob"
         )
 
@@ -90,9 +87,6 @@ class StepFunctionsStateMachine(Construct):
             container_overrides=tasks.BatchContainerOverrides(
                 command=sfn.JsonPath.list_at("$.command")
             ),
-            payload=sfn.TaskInput.from_object({
-                "command": sfn.JsonPath.string_at("$.command")
-            }),
             result_path="$.processingJob"
         )
 
@@ -106,9 +100,6 @@ class StepFunctionsStateMachine(Construct):
             container_overrides=tasks.BatchContainerOverrides(
                 command=sfn.JsonPath.list_at("$.command")
             ),
-            payload=sfn.TaskInput.from_object({
-                "command": sfn.JsonPath.string_at("$.command")
-            }),
             result_path="$.trainingJob"
         )
 
