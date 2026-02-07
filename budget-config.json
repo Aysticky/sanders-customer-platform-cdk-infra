@@ -1,0 +1,12 @@
+{
+  "BudgetName": "SandersMonthlyBudget",
+  "BudgetLimit": {
+    "Amount": "10",
+    "Unit": "USD"
+  },
+  "TimeUnit": "MONTHLY",
+  "BudgetType": "COST",
+  "CostFilters": {
+    "TagKeyValue": ["user:Project$sanders-customer-platform"]
+  }
+}
