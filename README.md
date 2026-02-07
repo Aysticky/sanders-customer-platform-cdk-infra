@@ -500,6 +500,71 @@ The stack supports multiple environments (dev, prod) with appropriate configurat
 - **Dev**: Permissive deletion policies, auto-delete on stack removal, suitable for testing
 - **Prod**: Retain resources on stack deletion, enhanced backup/recovery, production-ready
 
+## Destroying Infrastructure
+
+When you're done and want to remove all resources to stop incurring costs:
+
+### Using CDK (Recommended)
+
+```bash
+# Destroy all resources created by the stack
+cdk destroy --all
+
+# Or destroy specific stack
+cdk destroy SandersCustomerPlatformStack-dev
+```
+
+This will:
+- Delete VPC, subnets, NAT Gateway, Internet Gateway
+- Delete Batch compute environment, job queue, job definitions
+- Delete Step Functions state machine
+- Delete IAM roles
+- Delete S3 bucket (if empty or configured with auto-delete)
+- Delete DynamoDB table
+- Delete ECR repository
+
+### Important Notes
+
+**Before destroying:**
+1. **Backup data** from S3 and DynamoDB if needed
+2. **Empty S3 bucket** manually if CDK fails to delete it
+3. **Delete ECR images** if the repository fails to delete
+
+**Manual cleanup (if needed):**
+
+```bash
+# Empty and delete S3 bucket manually
+aws s3 rm s3://sanders-customer-platform-dev --recursive
+aws s3 rb s3://sanders-customer-platform-dev
+
+# Delete ECR images
+aws ecr batch-delete-image \
+  --repository-name sanders-customer-platform-dev \
+  --image-ids imageTag=latest \
+  --region eu-central-1
+
+# Delete DynamoDB table manually (if needed)
+aws dynamodb delete-table \
+  --table-name sanders_daily_customer_features_dev \
+  --region eu-central-1
+```
+
+**Cost Impact:**
+- NAT Gateway stops charging immediately (saves ~$32/month)
+- All other pay-per-use resources stop incurring costs
+- S3 storage costs stop once bucket is empty
+
+### Verify Deletion
+
+```bash
+# Verify stack is deleted
+aws cloudformation describe-stacks \
+  --stack-name SandersCustomerPlatformStack-dev \
+  --region eu-central-1
+
+# Should return: "Stack with id SandersCustomerPlatformStack-dev does not exist"
+```
+
 ## Additional Resources
 
 - [AWS CDK Documentation](https://docs.aws.amazon.com/cdk/)
