@@ -6,6 +6,7 @@ from aws_cdk import (
     Tags
 )
 from constructs import Construct
+import json
 
 
 class StepFunctionsStateMachine(Construct):
@@ -60,36 +61,54 @@ class StepFunctionsStateMachine(Construct):
         )
 
         # Define a simple parallel job execution workflow
+        # Jobs accept command from input: $.command (array of strings)
+        # Example input: {"command": ["jobs/daily_features_tlc.py"]}
+        
         # Job 1: Feature extraction with 8GB
-        # Command will be taken from Docker image CMD/ENTRYPOINT or passed at runtime
         job_1 = tasks.BatchSubmitJob(
             self,
             "FeatureExtractionJob",
             job_name="feature-extraction",
             job_queue_arn=job_queue_arn,
             job_definition_arn=job_definitions['8g'].ref,
+            container_overrides=tasks.BatchContainerOverrides(
+                command=sfn.JsonPath.list_at("$.command")
+            ),
+            payload=sfn.TaskInput.from_object({
+                "command": sfn.JsonPath.string_at("$.command")
+            }),
             result_path="$.featureJob"
         )
 
         # Job 2: Data processing with 2GB
-        # Command will be taken from Docker image CMD/ENTRYPOINT or passed at runtime
         job_2 = tasks.BatchSubmitJob(
             self,
             "DataProcessingJob",
             job_name="data-processing",
             job_queue_arn=job_queue_arn,
             job_definition_arn=job_definitions['2g'].ref,
+            container_overrides=tasks.BatchContainerOverrides(
+                command=sfn.JsonPath.list_at("$.command")
+            ),
+            payload=sfn.TaskInput.from_object({
+                "command": sfn.JsonPath.string_at("$.command")
+            }),
             result_path="$.processingJob"
         )
 
         # Job 3: Model training with 16GB (runs after feature extraction)
-        # Command will be taken from Docker image CMD/ENTRYPOINT or passed at runtime
         job_3 = tasks.BatchSubmitJob(
             self,
             "ModelTrainingJob",
             job_name="model-training",
             job_queue_arn=job_queue_arn,
             job_definition_arn=job_definitions['16g'].ref,
+            container_overrides=tasks.BatchContainerOverrides(
+                command=sfn.JsonPath.list_at("$.command")
+            ),
+            payload=sfn.TaskInput.from_object({
+                "command": sfn.JsonPath.string_at("$.command")
+            }),
             result_path="$.trainingJob"
         )
 
